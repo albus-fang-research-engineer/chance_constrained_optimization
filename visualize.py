@@ -17,8 +17,8 @@ def plot_traj(traj, color, label):
     traj = np.array(traj)
     plt.plot(traj[:, 0], traj[:, 1], "-o", color=color, label=label)
 
-    for p in traj:
-        draw_robot(p, color)
+    # for p in traj:
+    #     draw_robot(p, color)
 
 # def plot_traj(traj):
 #     traj = np.array(traj)

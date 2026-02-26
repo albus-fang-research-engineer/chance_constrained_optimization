@@ -30,5 +30,4 @@ def solve_step(p0, p_goal, obstacles):
     ]
 
     res = minimize(objective, np.zeros(4), constraints=cons, method="SLSQP")
-
-    return p0 + res.x[:2], res
+    return p0 + res.x[:2]#, res
