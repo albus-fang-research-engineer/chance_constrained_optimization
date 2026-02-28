@@ -1,5 +1,31 @@
 import numpy as np
+from pathlib import Path
+from sdf.stochastic_robot_sdf import RobotSdfCollisionNet
 import torch
+
+
+def load_sdf_2d_model():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    model = RobotSdfCollisionNet(
+        in_channels=4,
+        out_channels=1,
+        layers=[128] * 4,
+        skips=[]
+    ).model
+
+    model_path = Path(__file__).parent / "models" / "sdf_2d.pt"
+
+    ckpt = torch.load(model_path, map_location=device)
+    model.load_state_dict(ckpt["model"])
+
+    model.to(device)
+    model.eval()
+
+    print(f"SDF model loaded from: {model_path}")
+    print(f"Using device: {device}")
+
+    return model, device
 RADIUS = 0.105
 def predict_mu_var(model, x):
     pred = model(x)
