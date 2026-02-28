@@ -1,18 +1,20 @@
 import numpy as np
 from scipy.optimize import minimize
 from scipy.stats import norm
-from world import mu_and_grad, SIGMA
+from load_njsdf.inference import mu_sigma_grad_nn
 
 DELTA = 0.05
 BETA = norm.ppf(1 - DELTA) # chance constraint
 
 
-def solve_step(p0, p_goal, obstacles): 
+def solve_step(p0, p_goal, obstacle_points, model, device):
     '''
     p0 is current position, p_goal is the next waypoint to track
     p0 and p_goal are not global start and goal points
     '''
-
+    mu0, sigma0, grad0 = mu_sigma_grad_nn(
+            p0, obstacle_points, model, device
+        )
     def objective(x):
         dp = x[:2]
         slack = x[2:]
@@ -20,8 +22,7 @@ def solve_step(p0, p_goal, obstacles):
 
     def chance_constraint(x):
         dp = x[:2]
-        mu, grad = mu_and_grad(p0, obstacles)
-        return mu + grad @ dp - BETA * SIGMA
+        return mu0 + grad0 @ dp - BETA * sigma0
 
     def tracking_constraint(x):
         dp = x[:2]
@@ -34,4 +35,4 @@ def solve_step(p0, p_goal, obstacles):
     ]
 
     res = minimize(objective, np.zeros(4), constraints=cons, method="SLSQP")
-    return p0 + res.x[:2]#, res
+    return p0 + res.x[:2], mu0, sigma0#, res

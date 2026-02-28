@@ -1,7 +1,7 @@
 import numpy as np
 
 ROBOT_RADIUS = 0.105
-SIGMA = 0.02
+# SIGMA = 0.02
 
 def make_3_box_obstacles():
     return [
@@ -10,6 +10,19 @@ def make_3_box_obstacles():
         (-0.2,  0.6,  0.5,  1.4),
     ]
 
+
+def sample_obstacle_points(boxes, num_points=2000):
+    pts = []
+
+    for xmin, xmax, ymin, ymax in boxes:
+        n = num_points // len(boxes)
+
+        xs = np.random.uniform(xmin, xmax, n)
+        ys = np.random.uniform(ymin, ymax, n)
+
+        pts.append(np.stack([xs, ys], axis=1))
+
+    return np.concatenate(pts, axis=0)
 
 def sdf_point_to_box(p, box):
     xmin, xmax, ymin, ymax = box
