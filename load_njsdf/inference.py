@@ -1,6 +1,6 @@
 import numpy as np
 from pathlib import Path
-from sdf.stochastic_robot_sdf import RobotSdfCollisionNet
+from load_njsdf.sdf.stochastic_robot_sdf import RobotSdfCollisionNet
 import torch
 
 
@@ -27,6 +27,7 @@ def load_sdf_2d_model():
 
     return model, device
 RADIUS = 0.105
+
 def predict_mu_var(model, x):
     pred = model(x)
     mu, logvar = torch.chunk(pred, 2, dim=-1)
