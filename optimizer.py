@@ -4,10 +4,14 @@ from scipy.stats import norm
 from world import mu_and_grad, SIGMA
 
 DELTA = 0.05
-BETA = norm.ppf(1 - DELTA)
+BETA = norm.ppf(1 - DELTA) # chance constraint
 
 
-def solve_step(p0, p_goal, obstacles):
+def solve_step(p0, p_goal, obstacles): 
+    '''
+    p0 is current position, p_goal is the next waypoint to track
+    p0 and p_goal are not global start and goal points
+    '''
 
     def objective(x):
         dp = x[:2]
